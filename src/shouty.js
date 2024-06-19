@@ -1,12 +1,13 @@
 class Person {
-  constructor(network) {
+  constructor(network, location) {
     this.messages = [];
     this.network = network;
+    this.location = location;
     this.network.subscribe(this);
   }
 
   shout(message) {
-    this.network.broadcast(message);
+    this.network.broadcast(message, this.location);
   }
 
   hear(message) {
@@ -19,13 +20,16 @@ class Person {
 }
 
 class Network {
-  constructor() {
+  constructor(range) {
     this.subscribers = [];
+    this.range = range;
   }
 
-  broadcast(message) {
+  broadcast(message, shouter_location) {
     this.subscribers.forEach((subscriber) => {
-      subscriber.hear(message);
+      if (Math.abs(shouter_location - subscriber.location) <= this.range) {
+        subscriber.hear(message);
+      }
     });
   }
 
@@ -34,4 +38,7 @@ class Network {
   }
 }
 
-module.exports = { Person, Network };
+module.exports = {
+  Person: Person,
+  Network: Network,
+};
