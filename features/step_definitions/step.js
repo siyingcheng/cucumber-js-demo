@@ -1,6 +1,7 @@
 const { Given, When, Then, Before } = require("@cucumber/cucumber");
 const { assertThat, is, not, contains } = require("hamjest");
 const { Person, Network } = require("../../src/shouty");
+const assert = require("assert");
 
 const default_range = 100;
 
@@ -48,8 +49,14 @@ Then("Larry should not hear a shout", function () {
 });
 
 Given("people are located at", function (dataTable) {
-  console.log(dataTable.hashes());
   dataTable.hashes().map((person) => {
     this.people[person.name] = new Person(this.network, person.location);
   });
+});
+
+Then("Lucy hears the following messages:", function (expectedMessages) {
+  let actualMessages = this.people["Lucy"]
+    .messageHeard()
+    .map((message) => [message]);
+  assert.deepEqual(actualMessages, expectedMessages.raw());
 });
