@@ -44,7 +44,7 @@ Given("the range is {int}", function (range) {
 Then("Larry should not hear a shout", function () {
   assertThat(
     this.people["Larry"].messageHeard(),
-    not(contains([this.messageFromSean]))
+    not(contains(this.messageFromSean))
   );
 });
 
@@ -59,4 +59,16 @@ Then("Lucy hears the following messages:", function (expectedMessages) {
     .messageHeard()
     .map((message) => [message]);
   assert.deepEqual(actualMessages, expectedMessages.raw());
+});
+
+Then("Lucy should not hear a shout", function () {
+  assertThat(
+    this.people["Lucy"].messageHeard(),
+    not(contains(this.messageFromSean))
+  );
+});
+
+When("Sean shouts following message", function (message) {
+  this.people["Sean"].shout(message);
+  this.messageFromSean = message;
 });

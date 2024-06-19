@@ -48,3 +48,18 @@ Feature: shouts
       Then Lucy hears the following messages:
         | Free bagels! |
         | Free toast!  |
+
+  Rule: Maximum length of message is 180 characters
+
+    Scenario: Message is within length limit
+      Given a person named Sean
+      And a person named Lucy
+      When Sean shouts following message
+        """
+        This is a really long meesage
+        so long in fact that I am not going to 
+        be allowed to send it, at least if I keep
+        typing like this until the length is over
+        the limit of 180 characters.
+        """
+      Then Lucy should not hear a shout
