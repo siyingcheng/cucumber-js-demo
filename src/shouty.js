@@ -1,20 +1,16 @@
 class Person {
-  constructor(name) {
-    this.name = name;
+  constructor(network) {
     this.messages = [];
-  }
-  moveTo(distance) {
-    console.log(`${this.name} moved ${distance} meters.`);
+    this.network = network;
+    this.network.subscribe(this);
   }
 
   shout(message) {
-    console.log(`${this.name} shouted: ${message}`);
+    this.network.broadcast(message);
   }
 
-  hear(distance, message) {
-    if (distance <= 15) {
-      this.messages.push(message);
-    }
+  hear(message) {
+    this.messages.push(message);
   }
 
   messageHeard() {
@@ -22,4 +18,20 @@ class Person {
   }
 }
 
-module.exports = Person;
+class Network {
+  constructor() {
+    this.subscribers = [];
+  }
+
+  broadcast(message) {
+    this.subscribers.forEach((subscriber) => {
+      subscriber.hear(message);
+    });
+  }
+
+  subscribe(person) {
+    this.subscribers.push(person);
+  }
+}
+
+module.exports = { Person, Network };

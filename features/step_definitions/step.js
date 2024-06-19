@@ -1,27 +1,24 @@
-const { Given, When, Then } = require("@cucumber/cucumber");
+const { Given, When, Then, Before } = require("@cucumber/cucumber");
 const { assertThat, is, not } = require("hamjest");
-const Person = require("../../src/shouty");
+const { Person, Network } = require("../../src/shouty");
 
-Given(
-  "{person} is located/standing {int} meters from Sean",
-  function (lucy, distance) {
-    this.lucy = lucy;
-    this.sean = new Person("Sean");
-    this.distance = distance;
-    this.lucy.moveTo(distance);
-  }
-);
+Before(function () {
+  this.network = new Network();
+});
 
 When("Sean shouts {string}", function (message) {
   this.sean.shout(message);
-  this.message = message;
-  this.lucy.hear(this.distance, message);
+  this.messageFromSean = message;
 });
 
 Then("Lucy hears Sean's message", function () {
-  assertThat(this.lucy.messageHeard(), is([this.message]));
+  assertThat(this.lucy.messageHeard(), is([this.messageFromSean]));
 });
 
-Then("Lucy does not hear Sean's message", function () {
-  assertThat(this.lucy.messageHeard(), not(this.message));
+Given("a person named Lucy", function () {
+  this.lucy = new Person(this.network);
+});
+
+Given("a person named Sean", function () {
+  this.sean = new Person(this.network);
 });
